@@ -47,6 +47,18 @@ The image search page has the following components: <br>
 ---On Heroku, the free tier only includes <b>1 GB of RAM and a comparatively slower and  weaker processor with less number pf cores</b>. This leads to a little increase in latency for image search, as compared to my local computer. But the Algorithms are optimized. <br><br>
 
 
+<br>
+<h3>RUNNING ON LOCAL SYSTEM</h3> <br>
+<ul>
+ <li> Clone this repository -  $<i>git clone https://github.com/yugrocks/tapsearch.git</i>
+ <li> Change directory to where the "<i>manage.py</i>" file exists.
+ <li> Install the requirements-  $<i>pip install -r requiements.txt</i>
+ <li> Run Collectstatic command-  $<i>python manage.py collectstatic</i>
+ <li> Run the app-   $<i>python manage.py runserver</i>
+ 
+ </ul>
+
+
 <b>SNAPSHOTS OF THE APP:</b><br>
 
  
