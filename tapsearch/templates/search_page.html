@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=McLaren&display=swap" rel="stylesheet">
+<title> TAPSEARCH </title>
+
+</head>
+
+
+{%block content%}
+<body>
+<center>
+<h2 style="font-family: McLaren, sans-serif;">TAP SEARCH</h2>
+</center>
+
+
+<div class="container-fluid">
+
+<div class="row">
+<div class="col-sm-12 col-md-6 col-lg-6">
+<input type="text" class="form-control" id="query" style="margin-left:20px;margin-bottom:10px;margin-top:20px;" placeholder="Please enter the word and press Enter.">
+</div>
+
+<div class="col-sm-12 col-md-6 col-lg-6">
+<button type="button" class="btn btn-primary" onclick=call_server() style="margin-bottom:5px;margin-top:20px;"> SUBMIT QUERY</button>
+
+<button type="button" class="btn btn-danger" onclick=window.open("{% url 'get_index_page' %}") style="margin-bottom:5px;margin-top:20px;"> INDEX A DOCUMENT</button>
+
+<button type="button" class="btn btn-danger" onclick=clear_index() style="margin-bottom:5px;margin-top:20px;">CLEAR INDEX</button>
+
+
+<button type="button" class="btn btn-info" onclick=window.open("{% url 'image_search_page' %}") style="margin-bottom:5px;margin-top:20px;"> IMAGE SEARCH ENGINE</button>
+
+
+
+</div>
+
+
+
+
+</div>
+<b><p id="wait" style="margin-left:20px;margin-bottom:10px;"></p></b>
+
+<div class="container-fluid" id="dashboard" style="background:ffe;">
+
+
+
+</div>
+
+
+</div>
+
+
+<script>
+    var input = document.getElementById("query");
+    input.addEventListener("keyup", function(event) {
+			  if (event.keyCode === 13) {
+				call_server();
+		}
+	});
+	
+	
+    function call_server(){
+	// first delete any elements from dashboard if any
+	var dashboard = document.getElementById("dashboard");
+	dashboard.innerHTML = "";
+	
+	$.ajax({
+    url: {% url 'search' %},
+    type: 'POST',
+    data: {
+        query: document.getElementById("query").value,
+    },
+    headers: {
+        'Access-Control-Allow-Origin': "*"
+    },
+	
+		
+    success: function(data,status){
+	  var dashboard = document.getElementById("dashboard");
+	  var obj = JSON.parse(data);
+	  var flag = obj["status"];
+	  var results = obj["results"];
+	  if (flag){
+	  document.getElementById("wait").innerHTML ="";
+	  for (i=0; i<results.length; i++){
+	       //create a dada row
+		   var dada = document.createElement("div");
+		   dada.classList.add("row","row-content");
+		   dada.style="background:#ffd;margin-up:3px;margin-bottom:3px;"
+			   var papa_div = document.createElement("div");
+			   papa_div.style = "margin-right:4px;margin-left:15px;";
+			   //papa_div.class = "col-sm-5 col-md-5 col-lg-5";
+			   papa_div.classList.add("col-sm-5" ,"col-md-5" ,"col-lg-5");
+			    var h = document.createElement("b");
+				var k = document.createTextNode(i+1);
+				var b = document.createElement("br");
+				h.appendChild(k);
+				var question = document.createElement("p");
+				var node = document.createTextNode(results[i]);
+				question.appendChild(h);
+				question.appendChild(b);
+				question.appendChild(node);
+				papa_div.appendChild(question);
+				dada.appendChild(papa_div);
+			   
+			dashboard.appendChild(dada);
+			
+	  
+	     } // end for loop
+	  } // end if flag condition
+	  else{
+	  
+	     document.getElementById("wait").innerHTML = "No results found for the given keyword";
+	  
+	  }
+    }
+});
+
+
+	
+}
+
+
+function clear_index(){
+
+$.ajax({
+    url: {% url 'clear_index' %},
+    type: 'GET',
+	
+
+});
+var dashboard = document.getElementById("dashboard");
+	dashboard.innerHTML = "";
+document.getElementById("wait").innerHTML = "INDEX CLEARED!";
+
+};
+
+</script>
+
+
+
+</body>
+{%endblock%}
+
+
+</html>

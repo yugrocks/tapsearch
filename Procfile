@@ -1,0 +1,1 @@
+web: gunicorn tapsearch.wsgi --timeout 1000 --log-file - 

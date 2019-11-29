@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<title> Index Document</title>
+<link href="https://fonts.googleapis.com/css?family=McLaren&display=swap" rel="stylesheet">  
+
+</head>
+
+
+<body>
+
+
+{% block content %}
+<div class="col-lg-10 col-md-10" style="margin:30px">
+<form method="POST" action="{% url 'index_document' %}">
+
+<h3>  PLEASE ENTER THE TEXT HERE TO CREATE (or add to) THE INDEX:  </h3>
+<textarea class="form-control" rows=19 style="box-shadow: 2px 0px 2px" name="document">
+</textarea>
+
+
+<input  class="btn btn-info" style="margin-top:10px;" type="submit" value="SUBMIT">
+
+</form>
+
+
+
+</div>
+<div class = "col-lg-5 col-md-5 col-sm-9" style="padding:5px;margin-left:30px;box-shadow:1px 1px 1px 1px">
+<p style = "margin-top:20px;">OR INPUT A PDF FILE (This may take some time. <b>Please do not close the page while the file is uploading because Heroku's server has been set to concurrency of 1 for this demo project for some reasons</b>.)</p>
+
+<form enctype="multipart/form-data" method="POST" action="{% url 'upload_pdf' %}">
+<input class = "form-control" type="file" name="pdf" id = "pdf" accept="application/pdf">
+<input class="btn btn-info" style="margin-top:10px;" type="submit" value="SUBMIT PDF FILE">  
+
+</form>
+
+</div>
+
+</form>
+
+{% endblock %}
+
+
+</html>

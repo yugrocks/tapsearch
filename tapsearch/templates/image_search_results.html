@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=McLaren&display=swap" rel="stylesheet">
+<title>IMAGE SEARCH</title>
+
+</head>
+
+
+
+<body>
+{% block content %}
+<center>
+<h2 style="font-family: McLaren, sans-serif;">IMAGE SEARCH</h2>
+</center>
+
+
+<div class="container-fluid">
+
+
+<div>
+<form id="form" enctype="multipart/form-data">
+
+<div style="margin-top:20px" class="row">
+
+
+<div class="col-sm-12 col-md-3 col-lg-3">
+<input type="file" class="form-control" id="image" name="image" accept="image/*" value="Upload an Image">
+<b><p id="query_image_text" style="margin-top:5px;"></p></b>
+<img id="uploadedimage" style="box-shadow:2px 0px 2px" width="50%"></img>
+</div>
+<div class= "col-sm-12 col-md-3 col-lg-3">
+
+<button type="submit" class="btn btn-info" ><< SEARCH SIMILAR IMAGES</button>
+
+</div>
+</form>
+
+<form id = "uploadform" enctype="multipart/form-data">
+<div class="col-sm-12 col-md-3 col-lg-3">
+<input type="file" class="form-control" id="images_to_index" name="images_to_index" accept="image/*" value="Upload an Image" multiple>
+<b><p id="index_images_text" style="margin-top:5px;"></p></b>
+</div>
+<div class= "col-sm-12 col-md-3 col-lg-3">
+
+<button type="submit" class="btn btn-primary" ><< INDEX IMAGES</button>
+
+</div>
+
+</form>
+
+</div>
+</div>
+<hr style="box-shadow: 1px 0px 1px;">
+<b><p id="results"></p></b>
+<div id="gallery" >
+     
+	 
+	 
+	 
+	 
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+document.getElementById("image").onchange = function () {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        document.getElementById("uploadedimage").src = e.target.result;
+		document.getElementById("query_image_text").innerHTML = "QUERY IMAGE:";
+    };
+
+    // read the image file as a data URL.
+    reader.readAsDataURL(this.files[0]);
+};
+
+$('#form').submit(function(e){
+        e.preventDefault();
+        $form = $(this)
+        var formData = new FormData(this);
+        $.ajax({
+            url: "{% url 'image_search' %}",
+            type: 'POST',
+            data: formData,
+			beforeSend: function(){
+                     $("#results").html("PLEASE WAIT...");
+					 gallery = document.getElementById("gallery");
+					gallery.innerHTML = "";
+                 },
+            success: function (response) {
+                $('.error').remove();
+                console.log(response);
+				//now dynamically add image children to the gallery div
+				
+				document.getElementById("results").innerHTML = "FETCHED RESULTS:";
+				var obj = JSON.parse(response)
+				for(i=0;i<obj.length;i++){
+				
+                     var img = document.createElement("img");
+					 {%load static%}
+                     img.src = "{% static '' %}"+obj[i][1];
+					 console.log("{% static '' %}"+obj[i][1]);
+					 img.style.cssText = "margin:4px;width:20%;box-shadow:2px 0px 2px";
+					 gallery.appendChild(img);
+					 
+				 }// end for loop
+                
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+	
+	
+	$('#uploadform').submit(function(e){
+        e.preventDefault();
+        $form = $(this)
+        var formData = new FormData(this);
+        $.ajax({
+            url: "{% url 'index_images' %}",
+            type: 'POST',
+            data: formData,
+			beforeSend: function(){
+                     $("#index_images_text").html("UPLOADING IMAGES...");
+					 gallery = document.getElementById("gallery");
+					gallery.innerHTML = "";
+                 },
+            success: function (response) {
+                $('.error').remove();
+                console.log(response);
+				$("#index_images_text").html("IMAGES INDEXED SUCCESSFULLY.");
+					 
+				 
+                
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+
+
+</script>
+
+
+{% endblock %}
+
+</body>
+
+
+</html>
